@@ -2,14 +2,12 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 
-// const backendURL = 'https://redux-user-auth.up.railway.app'
 const backendURL = "http://127.0.0.1:4000";
 
 export const userLogin = createAsyncThunk(
   "user/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      // configure header's Content-Type as JSON
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -22,11 +20,8 @@ export const userLogin = createAsyncThunk(
         config
       );
 
-      // store user's token in local storage
-
       return data;
     } catch (error) {
-      // return custom error message from API if any
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
@@ -39,7 +34,6 @@ export const userLogin = createAsyncThunk(
 export const registerUser = createAsyncThunk(
   "user/register",
   async ({ name, email, password, file }, { rejectWithValue }) => {
-    // const file = files[0];
     console.log(file);
     try {
       const config = {

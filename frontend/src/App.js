@@ -25,9 +25,9 @@ function App() {
           <Route path="/register" element={<RegisterScreen />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/user-profile" element={<ProfileScreen />} />
-            <Route path="/book/:id" element={<BookDetails />} />
+            <Route path="/dashboard" element={<DashboardScreen />} />
           </Route>
-          <Route path="/dashboard" element={<DashboardScreen />} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

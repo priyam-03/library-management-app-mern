@@ -40,11 +40,11 @@ const Header = () => {
               <button className="button" onClick={() => dispatch(logout())}>
                 Logout
               </button>
-              <img
+              {/* <img
                 className="profile-image"
                 src={`http://localhost:4000/${userInfo.user.avatar.filePath}`}
                 alt="img"
-              />
+              /> */}
             </div>
           ) : (
             <NavLink className="button" to="/login">

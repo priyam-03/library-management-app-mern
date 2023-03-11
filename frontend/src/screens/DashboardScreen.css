@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans');
+
+.outerDiv {
+    align-items: center;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    font-family: 'Josefin Sans', cursive;
+}
+
+h1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 100px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    font-family: 'Josefin Sans', cursive;
+}
+
+h6 {
+    color: rgb(0, 0, 0);
+    opacity: 85%;
+    align-content: center end;
+    align-self: center;
+}

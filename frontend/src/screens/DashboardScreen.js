@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import BookCard from "../components/Bookcard";
 import { getAllBook } from "../services/api";
+import "./DashboardScreen.css";
 const DashboardScreen = () => {
   const [allBook, setAllBook] = useState([]);
   useEffect(() => {
@@ -17,9 +18,12 @@ const DashboardScreen = () => {
   };
   return (
     <Fragment>
-      <h2>All Books</h2>
-      <div className="books">
-        {allBook && allBook.map((book) => <BookCard book={book}></BookCard>)}
+      <div className="outerDiv">
+        <h1>All Books</h1>
+
+        <div className="books">
+          {allBook && allBook.map((book) => <BookCard book={book}></BookCard>)}
+        </div>
       </div>
     </Fragment>
   );

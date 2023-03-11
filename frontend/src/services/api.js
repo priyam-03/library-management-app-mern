@@ -10,6 +10,25 @@ export const getBookDetails = async (id) => {
   console.log(data);
   return data;
 };
-export const rentBook = async (id) => {
-  return axios.put(`${usersUrl}/api/v1/rentBook/${id}`);
+export const rentBook = async (userid, id) => {
+  return axios.put(
+    `${usersUrl}/api/v1/rentBook/${id}`,
+    { userid },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+export const submitBook = async (userid, id) => {
+  return axios.put(
+    `${usersUrl}/api/v1/submitBook`,
+    { userid, id },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
