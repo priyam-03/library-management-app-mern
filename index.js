@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-
+const paymentRoute = require("./routes/paymentRoutes");
 const errorMiddleware = require("./middleware/error");
 
 // Config
@@ -15,16 +15,36 @@ console.log(process.env.SMPT_MAIL);
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.set("trust proxy", 1);
 // Route Imports
 
 const user = require("./routes/userRoute");
 const book = require("./routes/bookRoute");
 app.use("/api/v1", user);
 app.use("/api/v1", book);
+app.post("/set-cookie", (req, res) => {
+  res.cookie("newnewnew", "jrfjkwfn", {
+    maxAge: 86400000, // 1 day
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
+  res.json("Cookie set!");
+});
 
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api", paymentRoute);
+
+app.get("/api/getkey", (req, res) =>
+  res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
+);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./frontend/build/index.html"));

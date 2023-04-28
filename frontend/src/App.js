@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -12,9 +13,13 @@ import HomeScreen from "./screens/HomeScreen";
 import ProtectedRoute from "./routing/ProtectedRoute";
 import BookDetails from "./screens/Bookdetails";
 import DashboardScreen from "./screens/DashboardScreen";
+import PaymentSuccess from "./screens/PaymentSuccess";
+import Paymentscreen from "./screens/Paymentscreen";
 import "./App.css";
 
 function App() {
+  const usersUrl = "http://localhost:4000";
+
   return (
     <Router>
       <Header />
@@ -26,8 +31,10 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/user-profile" element={<ProfileScreen />} />
             <Route path="/dashboard" element={<DashboardScreen />} />
+            <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+            <Route path="/payment" element={<Paymentscreen />} />
           </Route>
-
+          <Route path="/book/:id" element={<BookDetails />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

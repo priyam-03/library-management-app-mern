@@ -56,13 +56,22 @@ const userSchema = new mongoose.Schema(
           book_id: { type: Schema.Types.ObjectId, ref: "Book" },
           no_of_day: {
             type: Number,
+            default: 0,
+          },
+          createdAt: {
+            type: Date,
+            default: Date.now(),
           },
         },
       ],
       default: [],
     },
-    // resetPasswordToken: String,
-    // resetPasswordExpire: Date,
+    fine: {
+      type: Number,
+      default: 100,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   { timestamps: true }
 );
@@ -73,6 +82,8 @@ userSchema.pre("save", async function (next) {
   }
 
   this.password = await bcrypt.hash(this.password, 10);
+
+  next();
 });
 
 // JWT TOKEN
@@ -89,19 +100,19 @@ userSchema.methods.comparePassword = async function (password) {
 };
 
 // Generating Password Reset Token
-// userSchema.methods.getResetPasswordToken = function () {
-//   // Generating Token
-//   const resetToken = crypto.randomBytes(20).toString("hex");
+userSchema.methods.getResetPasswordToken = function () {
+  // Generating Token
+  const resetToken = crypto.randomBytes(20).toString("hex");
 
-//   // Hashing and adding resetPasswordToken to userSchema
-//   this.resetPasswordToken = crypto
-//     .createHash("sha256")
-//     .update(resetToken)
-//     .digest("hex");
+  // Hashing and adding resetPasswordToken to userSchema
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
-//   this.resetPasswordExpire = Date.now() + 15 * 60 * 10000;
+  this.resetPasswordExpire = Date.now() + 15 * 60 * 10000;
 
-//   return resetToken;
-// };
+  return resetToken;
+};
 
 module.exports = mongoose.model("Userauth", userSchema);

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../features/auth/authActions";
 import { useEffect } from "react";
@@ -49,6 +49,7 @@ const LoginScreen = () => {
       <button type="submit" className="button" disabled={loading}>
         {loading ? <Spinner /> : "Login"}
       </button>
+      <Link to="/forgotpassword">Forgot Password</Link>
     </form>
   );
 };

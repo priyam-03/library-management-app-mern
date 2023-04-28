@@ -6,10 +6,11 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
+
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
-  console.log(req.file);
+  console.log(req);
   const { originalname, path, mimetype } = req.file;
 
   const user = await User.create({
@@ -27,36 +28,22 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 201, res);
 });
 exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
+  var avatar = null;
+  if (req.file === undefined) {
+    avatar = req.user.avatar;
+  } else {
+    avatar = {
+      fileName: req.file.originalname,
+      filePath: req.file.path,
+      fileType: req.file.mimetype,
+      fileSize: fileSizeFormatter(req.file.size, 2),
+    };
+  }
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
-    // avatar: {
-    //   fileName: req.file.originalname,
-    //   filePath: req.file.path,
-    //   fileType: req.file.mimetype,
-    //   fileSize: fileSizeFormatter(req.file.size, 2),
-    // },
+    avatar,
   };
-
-  // if (req.body.avatar !== "") {
-  //   const user = await User.findById(req.user.id);
-
-  //   const imageId = user.avatar.public_id;
-
-  //   await cloudinary.v2.uploader.destroy(imageId);
-
-  //   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-  //     folder: "avatars",
-  //     width: 150,
-  //     crop: "scale",
-  //   });
-
-  //   newUserData.avatar = {
-  //     public_id: myCloud.public_id,
-  //     url: myCloud.secure_url,
-  //   };
-  // }
-
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
@@ -126,11 +113,9 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/password/reset/${resetToken}`;
+  const resetPasswordUrl = `${req.protocol}://localhost:3000/resetpassword/${resetToken}`;
   console.log(resetPasswordUrl);
-  const text = `<h1>Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.</h1>`;
+  const text = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
   console.log(user.email);
   try {
     await sendEmail({
@@ -176,11 +161,13 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorHander("Password does not password", 400));
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(
+      new ErrorHander("Password does not match confirmpassword", 400)
+    );
   }
 
-  user.password = req.body.password;
+  user.password = req.body.newPassword;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
 
@@ -192,7 +179,20 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 // Get User Detail
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user.id);
+  const now = new Date();
+  console.log(user.rentBook.length);
+  if (user.rentBook.length > 0) {
+    for (var i = 0; i < user.rentBook.length; i++) {
+      const timeSinceLastUpdate =
+        (now.getTime() - new Date(user.rentBook[i].createdAt).getTime()) /
+        (1000 * 24 * 60 * 60);
+      user.rentBook[i].no_of_day = Math.round(timeSinceLastUpdate);
+      user.fine += user.rentBook[i].no_of_day * 2;
+    }
+    // Update the createdAt field to reflect the current date
+  }
 
+  await user.save({ validateBeforeSave: false });
   res.status(200).json({
     success: true,
     user,
@@ -292,14 +292,16 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 exports.rentNewBook = catchAsyncErrors(async (req, res, next) => {
   const { userid } = req.body;
   const user = await User.findById(userid);
-  console.log(user);
+  console.log("user" + user);
   const bookid = req.params.bookid;
+  console.log(bookid);
   const book = await Book.findById(bookid);
   console.log(book);
   book.availability = false;
+  const this_time = Date.now();
   const newRentBook = {
     book_id: bookid,
-    no_of_day: 0,
+    no_of_day: Date.now() - this_time,
   };
   user.rentBook.push(newRentBook);
   await user.save();
@@ -311,15 +313,19 @@ exports.rentNewBook = catchAsyncErrors(async (req, res, next) => {
   });
 });
 exports.submitTakenBook = catchAsyncErrors(async (req, res, next) => {
-  const { userid, bookid } = req.body;
-  const user = await User.findById(userid);
-  const book = await Book.findById(bookid);
+  const user = await User.findById(req.user.id);
+
+  const { id } = req.body;
+
+  const book = await Book.findById(id);
+  console.log(book);
+  console.log(user);
   book.availability = true;
   var i = user.rentBook.length;
   while (i--) {
-    console.log(mongoose.Types.ObjectId(bookid));
+    console.log(mongoose.Types.ObjectId(id));
     console.log(user.rentBook[i]["book_id"]);
-    if (user.rentBook[i]["book_id"].equals(mongoose.Types.ObjectId(bookid))) {
+    if (user.rentBook[i]["book_id"].equals(mongoose.Types.ObjectId(id))) {
       console.log(user.rentBook[i]["book_id"]);
       user.rentBook.splice(i, 1);
     }

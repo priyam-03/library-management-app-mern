@@ -9,9 +9,10 @@ import { setCredentials } from "../features/auth/authSlice";
 import "../styles/header.css";
 
 const Header = () => {
-  const { userInfo } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo } = useSelector((state) => state);
+
   const dispatch = useDispatch();
-  console.log(userInfo);
+  // console.log(userInfo);
   // dispatch(profile());
   // automatically authenticate user if token is found
   // const { data, isFetching } = useGetDetailsQuery("userDetails", {
@@ -35,7 +36,7 @@ const Header = () => {
           {userInfo === null && "You're not logged in"} */}
         {/* </span> */}
         <div className="cta">
-          {userInfo ? (
+          {!isAuthenticated ? (
             <div>
               <button className="button" onClick={() => dispatch(logout())}>
                 Logout

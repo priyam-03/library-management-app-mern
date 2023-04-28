@@ -49,5 +49,5 @@ router
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 router.route("/rentBook/:bookid").put(rentNewBook);
-router.route("/submitBook").put(submitTakenBook);
+router.route("/submitBook").put(isAuthenticatedUser, submitTakenBook);
 module.exports = router;

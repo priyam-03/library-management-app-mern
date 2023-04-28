@@ -20,7 +20,7 @@ const BookCard = ({ book }) => {
     }
   };
   return (
-    <div className="bookcard">
+    <Link to={`/book/${book._id}`} className="bookcard">
       <img
         src={`http://localhost:4000/${book.bookimage.filePath}`}
         alt="image"
@@ -28,9 +28,9 @@ const BookCard = ({ book }) => {
       />
       <h3>{book.name}</h3>
       <h3>{book.author}</h3>
-      {book.availability && <button onClick={rentnewBook}>Rent It</button>}
-      {!book.availability && <p>Sorry it is not available right now</p>}
-    </div>
+      {/* {book.availability && <button onClick={rentnewBook}>Rent It</button>}
+      {!book.availability && <p>Sorry it is not available right now</p>} */}
+    </Link>
   );
 };
 export default BookCard;
