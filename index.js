@@ -28,15 +28,6 @@ const user = require("./routes/userRoute");
 const book = require("./routes/bookRoute");
 app.use("/api/v1", user);
 app.use("/api/v1", book);
-app.post("/set-cookie", (req, res) => {
-  res.cookie("newnewnew", "jrfjkwfn", {
-    maxAge: 86400000, // 1 day
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-  });
-  res.json("Cookie set!");
-});
 
 app.use(express.static(path.join(__dirname, "./frontend/build")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

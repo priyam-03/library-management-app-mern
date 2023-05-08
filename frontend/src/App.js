@@ -15,11 +15,10 @@ import BookDetails from "./screens/Bookdetails";
 import DashboardScreen from "./screens/DashboardScreen";
 import PaymentSuccess from "./screens/PaymentSuccess";
 import Paymentscreen from "./screens/Paymentscreen";
+import SearchComponent from "./components/SearchComponent";
 import "./App.css";
 
 function App() {
-  const usersUrl = "http://localhost:4000";
-
   return (
     <Router>
       <Header />
@@ -33,8 +32,9 @@ function App() {
             <Route path="/dashboard" element={<DashboardScreen />} />
             <Route path="/paymentsuccess" element={<PaymentSuccess />} />
             <Route path="/payment" element={<Paymentscreen />} />
+            <Route path="/book/:id" element={<BookDetails />} />
+            <Route path="/search" element={<SearchComponent />} />
           </Route>
-          <Route path="/book/:id" element={<BookDetails />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

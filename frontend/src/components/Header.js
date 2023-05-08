@@ -9,8 +9,8 @@ import { setCredentials } from "../features/auth/authSlice";
 import "../styles/header.css";
 
 const Header = () => {
-  const { isAuthenticated, userInfo } = useSelector((state) => state);
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  console.log(isAuthenticated);
   const dispatch = useDispatch();
   // console.log(userInfo);
   // dispatch(profile());
@@ -36,16 +36,16 @@ const Header = () => {
           {userInfo === null && "You're not logged in"} */}
         {/* </span> */}
         <div className="cta">
-          {!isAuthenticated ? (
+          {isAuthenticated ? (
             <div>
               <button className="button" onClick={() => dispatch(logout())}>
                 Logout
               </button>
-              {/* <img
+              <img
                 className="profile-image"
                 src={`http://localhost:4000/${userInfo.user.avatar.filePath}`}
                 alt="img"
-              /> */}
+              />
             </div>
           ) : (
             <NavLink className="button" to="/login">
@@ -55,11 +55,20 @@ const Header = () => {
         </div>
       </div>
       <nav className="container navigation">
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/login">Login</NavLink>
-        <NavLink to="/register">Register</NavLink>
-        <NavLink to="/user-profile">Profile</NavLink>
-        <NavLink to="/dashboard">Dashboard</NavLink>
+        {isAuthenticated ? (
+          <>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/user-profile">Profile</NavLink>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+            <NavLink to="/search">Search book</NavLink>
+          </>
+        ) : (
+          <>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/login">Login</NavLink>
+            <NavLink to="/register">Register</NavLink>
+          </>
+        )}
       </nav>
     </header>
   );

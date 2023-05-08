@@ -58,14 +58,14 @@ const ProfileScreen = () => {
       <Link to="/updateProfile">Update Profile</Link>
       <div>
         <TableHead>
-          <TableCell>Id</TableCell>
+          <TableCell>Book name</TableCell>
           <TableCell>No of days book taken</TableCell>
         </TableHead>
         {userInfo.user.rentBook.length > 0 && (
           <TableBody>
             {userInfo.user.rentBook.map((user) => (
               <div>
-                <TableCell>{user.book_id}</TableCell>
+                <TableCell>{user.book_name}</TableCell>
                 <TableCell>{user.no_of_day}</TableCell>
                 <TableCell>
                   <Button

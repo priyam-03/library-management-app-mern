@@ -64,6 +64,29 @@ exports.getBookDetails = async (req, res, next) => {
   });
 };
 
+exports.searchBook = catchAsyncErrors(async (req, res, next) => {
+  const keyword = req.query.keyword;
+  // const regexPattern = new RegExp(keyword, "i");
+  // const books = await Book.find({
+  //   $or: [
+  //     { name: { $regex: regexPattern } },
+  //     { author: { $regex: regexPattern } },
+  //     { publisher: { $regex: regexPattern } },
+  //   ],
+  // });
+  const books = await Book.find({
+    $text: {
+      $search: keyword,
+      $caseSensitive: false,
+      $diacriticSensitive: false,
+      // $all: true,
+    },
+  });
+  res.status(200).json({
+    success: true,
+    books,
+  });
+});
 const fileSizeFormatter = (bytes, decimal) => {
   if (bytes === 0) {
     return "0 Bytes";

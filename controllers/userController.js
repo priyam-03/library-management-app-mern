@@ -193,10 +193,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
   }
 
   await user.save({ validateBeforeSave: false });
-  res.status(200).json({
-    success: true,
-    user,
-  });
+  sendToken(user, 200, res);
 });
 
 // update User password
@@ -292,15 +289,16 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 exports.rentNewBook = catchAsyncErrors(async (req, res, next) => {
   const { userid } = req.body;
   const user = await User.findById(userid);
-  console.log("user" + user);
+
   const bookid = req.params.bookid;
-  console.log(bookid);
+
   const book = await Book.findById(bookid);
-  console.log(book);
+
   book.availability = false;
   const this_time = Date.now();
   const newRentBook = {
     book_id: bookid,
+    book_name: book.name,
     no_of_day: Date.now() - this_time,
   };
   user.rentBook.push(newRentBook);

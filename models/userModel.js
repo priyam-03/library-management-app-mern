@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema(
       type: [
         {
           book_id: { type: Schema.Types.ObjectId, ref: "Book" },
+          book_name: { type: String },
           no_of_day: {
             type: Number,
             default: 0,
